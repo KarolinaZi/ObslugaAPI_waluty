@@ -1,0 +1,36 @@
+
+import requests
+from flask import Flask
+from flask import request,render_template
+
+
+response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
+data_as_json= response.json()
+
+for item in data_as_json:
+    only_rates = item.get('rates')
+
+codes_list = []
+for rate in only_rates:
+    cc = rate['code']
+    codes_list.append(cc)
+
+app = Flask(__name__)
+
+@app.route('/calculator', methods=['GET', 'POST'])
+def rates_calculator():
+    
+    if  request.method == 'GET':
+        print("We received GET")
+        return render_template("kalkulator_walut.html", codes_list=codes_list)
+    elif request.method == 'POST':
+        print("We received POST")
+        d = request.form
+        quantity_form=d.get('quantity')
+        curr_selected_form=d.get('currencies')
+        for rate in only_rates:
+        
+            if curr_selected_form ==rate.get('code'):
+                result=float(rate.get('ask'))*float(quantity_form)
+                print(result)
+        return f'{quantity_form} {curr_selected_form} kosztuje {result:0.2f} PLN.'

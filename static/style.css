@@ -1,0 +1,27 @@
+body {
+  background-color: 000000;
+  background-image: url(euro.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+
+.container2 {
+  position: center;
+  z-index:-2;
+}
+
+.container1 {
+  position: center;
+  background-color: darkgrey;
+  z-index:-1;
+  display: flex;
+  height: 120px;
+  max-width: 250px;
+  margin: 0 15px;
+  flex: 1;
+  align-self: center;
+  padding: 10px;
+
+}
