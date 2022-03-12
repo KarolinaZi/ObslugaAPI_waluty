@@ -10,11 +10,8 @@ data_as_json= response.json()
 app = Flask(__name__)
 
 for item in data_as_json:
-    current_date = item.get('effectiveDate')
-    if current_date != datetime.date.today():
-        response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
-        data_as_json= response.json()
     only_rates = item.get('rates')
+    current_date = item.get('effectiveDate')
 
 codes_list = []
 for rate in only_rates:
@@ -23,13 +20,19 @@ for rate in only_rates:
 
 
 @app.route('/calculator', methods=['GET', 'POST'])
-def rates_calculator():
-    
+def rates_calculator():  
     if  request.method == 'GET':
         print("We received GET")
         return render_template("kalkulator_walut.html", codes_list=codes_list)
+
     elif request.method == 'POST':
         print("We received POST")
+        if current_date != datetime.date.today():
+            response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
+            data_as_json= response.json()
+            for item in data_as_json:
+                only_rates = item.get('rates')
+
         d = request.form
         quantity_form=d.get('quantity')
         curr_selected_form=d.get('currencies')
